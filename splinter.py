@@ -52,7 +52,8 @@ def startScreen():
 						gameDisplay.fill(black)
 						message_display("Use your arrow keys to move", 40)
 						time.sleep(1)
-						game_loop()
+						return
+						#game_loop()
 						
 	
 
@@ -170,7 +171,7 @@ def game_loop(): #this is now the game loop
 
 	
 startScreen()	
-#game_loop()	
+game_loop()	
 pygame.quit()
 quit()
 
