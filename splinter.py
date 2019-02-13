@@ -9,10 +9,13 @@ display_height = 600
 
 black = (0,0,0)
 white = (255,255,255)
-red = (255, 0, 0)
+red = (200, 0, 0)
 purple = (128,0,128)
-
+green = (0, 200, 0)
 sentdex = (53, 115, 255)
+
+bright_red = (255, 0, 0)
+bright_green = (0, 255, 0)
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 
@@ -35,34 +38,64 @@ def things(thingx, thingy, thingw, thingh, color):
 	pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
 ################ make things coming from all direction
 	
-#############make a start screen function 
-def startScreen():
-	while True:
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-					pygame.quit()
-					quit()
-			
-			message_display("Press SPACE to start", 40)
-			
-			
-			for event in pygame.event.get():
-				if event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_SPACE:
-						gameDisplay.fill(black)
-						message_display("Use your arrow keys to move", 40)
-						time.sleep(1)
-						return
-						#game_loop()
-						
 	
-
+def button(msg, x, y, w, h, ic, ac, action=None):
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+	print(click + mouse)
+	
+	
+	if x+w > mouse[0] > x and y+h > mouse[1] > y:
+		pygame.draw.rect(gameDisplay, ac, (x, y, w, h))
+		if click[0] == 1 and action != None:
+			if action == "play":
+				game_loop()
+			elif action == "quit":
+				pygame.quit()
+				quit()
+	else:
+		pygame.draw.rect(gameDisplay, ic, (x, y, w, h))
+	
+	smallText = pygame.font.Font("freesansbold.ttf",20)
+	textSurf, textRect = text_objects(msg, smallText)
+	textRect.center = ( (x+(w/2)), (y+(h/2)) )
+	gameDisplay.blit(textSurf, textRect)
+		
+		
+#############make a start screen function 
+def game_intro():
+	
+	intro = True
+	
+	while intro:
+		for event in pygame.event.get():
+			#print(event)
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				quit()
+		
+		gameDisplay.fill(black)
+		largeText =  pygame.font.Font('freesansbold.ttf', 115)
+		textSurf, textRect = text_objects("A Bit Racey", largeText) #still need to make text object function
+		textRect.center = ((display_width/2), (display_height/2))
+		gameDisplay.blit(textSurf, textRect)
+		
+		button("Go!", 150, 500, 100, 50, green, bright_green, "play")
+		button("Quit :(", 550, 500, 100, 50, red, bright_red, "quit")
+		
+		mouse = pygame.mouse.get_pos()
+		#print(mouse)
+			
+		pygame.display.update()
+		clock.tick(15)
+	
+		
 def car(x,y):
 	gameDisplay.blit(carImg, (x,y))
 	
 
 def text_objects(text, font):
-	textSurface = font.render(text, True, red) #included with pygame
+	textSurface = font.render(text, True, white) #included with pygame
 	return textSurface, textSurface.get_rect()
 	
 def message_display(text, size):
@@ -170,7 +203,7 @@ def game_loop(): #this is now the game loop
 		clock.tick(60)
 
 	
-startScreen()	
+game_intro()
 game_loop()	
 pygame.quit()
 quit()
