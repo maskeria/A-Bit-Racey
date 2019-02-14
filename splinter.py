@@ -12,10 +12,11 @@ white = (255,255,255)
 red = (200, 0, 0)
 purple = (128,0,128)
 green = (0, 200, 0)
-sentdex = (53, 115, 255)
+sentdex = (53, 115, 200)
 
 bright_red = (255, 0, 0)
 bright_green = (0, 255, 0)
+bright_sentdex = (73, 135, 255)
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 
@@ -42,17 +43,14 @@ def things(thingx, thingy, thingw, thingh, color):
 def button(msg, x, y, w, h, ic, ac, action=None):
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
-	print(click + mouse)
+	#print(click + mouse)
 	
 	
 	if x+w > mouse[0] > x and y+h > mouse[1] > y:
+		
 		pygame.draw.rect(gameDisplay, ac, (x, y, w, h))
 		if click[0] == 1 and action != None:
-			if action == "play":
-				game_loop()
-			elif action == "quit":
-				pygame.quit()
-				quit()
+			action()
 	else:
 		pygame.draw.rect(gameDisplay, ic, (x, y, w, h))
 	
@@ -80,15 +78,38 @@ def game_intro():
 		textRect.center = ((display_width/2), (display_height/2))
 		gameDisplay.blit(textSurf, textRect)
 		
-		button("Go!", 150, 500, 100, 50, green, bright_green, "play")
-		button("Quit :(", 550, 500, 100, 50, red, bright_red, "quit")
+		button("Go!", 150, 500, 100, 50, green, bright_green, game_loop)
+		button("Quit :(", 550, 500, 100, 50, red, bright_red, quitGame)
+		button("Instructions", 325, 500, 140, 50, sentdex, bright_sentdex, instructions)
 		
-		mouse = pygame.mouse.get_pos()
-		#print(mouse)
+		
 			
 		pygame.display.update()
 		clock.tick(15)
+
+def instructions():
+	instruct = True
+	while instruct:
 	
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				quit()
+				
+		gameDisplay.fill(black)
+		message_display("USE ARROW KEYS TO MOVE", 50)
+		
+		button("Go!", 150, 500, 100, 50, green, bright_green, game_loop)
+		button("Quit :(", 550, 500, 100, 50, red, bright_red, quitGame)
+			
+		pygame.display.update()
+		clock.tick(15)
+
+
+
+def quitGame():
+	pygame.quit()
+	quit()
 		
 def car(x,y):
 	gameDisplay.blit(carImg, (x,y))
@@ -106,14 +127,15 @@ def message_display(text, size):
 	
 	pygame.display.update()
 	
-	time.sleep(1)
+	#time.sleep(1)
 	
 	#game_loop()
 	
 
 def crash():
 	message_display('YOU CRASHED', 100)
-	game_loop()
+	time.sleep(1)
+	game_intro()
 	
 def game_loop(): #this is now the game loop
 
